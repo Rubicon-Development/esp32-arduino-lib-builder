@@ -26,8 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target:
-          [esp32, esp32s2, esp32s3, esp32c2, esp32c3, esp32c6, esp32h2, esp32p4]
+        target: [esp32, esp32s3]
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -50,6 +49,16 @@ jobs:
         with:
           name: artifacts-${{ matrix.target }}
           path: dist
+
+      - name: Release
+        uses: jason2866/action-gh-release@v1.3
+        with:
+          tag_name: ${{ github.run_number }}
+          body_path: release-info.txt
+          prerelease: true
+          files: |
+            dist/framework*
+            release-info.txt
 
   combine-artifacts:
     name: Combine artifacts
